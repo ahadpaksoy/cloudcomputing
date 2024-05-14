@@ -6,14 +6,13 @@ services:
     command: /app/entrypoint.sh
     volumes:
       - .:/app
-    ports:
-      - "8000:8000"
+    expose:
+      - "8000"
     depends_on:
       - db
-    links:
-      - db:db
     networks:
       - djangonetwork
+
   db:
     image: postgres
     ports:
@@ -22,6 +21,17 @@ services:
       POSTGRES_DB: mydatabase
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 180951
+    networks:
+      - djangonetwork
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
     networks:
       - djangonetwork
 
